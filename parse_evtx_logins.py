@@ -29,7 +29,8 @@ evtxs = {1102: 'Log Cleared',
 4771: 'Kerberos pre-auth failed',
 4768: 'Kerberos TGT Requested',
 4769: 'Kerberos service ticket requested',
-4779: 'Disconnect(RDP or FastUser Switch)'  
+4779: 'Disconnect(RDP or FastUser Switch)',
+4825: 'RDP Connection Denied'
 }
 
 event_info_names = ('Date',
