@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 # Extract Common Windows Scheduled Tasks Events from
 # Microsoft-Windows-TaskScheduler4Operational.evtx to CSV
-# Based on gist by Y0ug https://gist.github.com/y0ug/bd7b2c94943afac276f9
 # Requires Python-evtx https://github.com/williballenthin/python-evtx
 # and BeautifulSoup
 
