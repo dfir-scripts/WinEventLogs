@@ -74,39 +74,6 @@ def main():
                         pass
                         
                     print((event_info) + ','.join(map(str,event_data_result)))
-'''                    
-                event_data = {}
-                for child in soup.eventdata.children:
-                    if type(child) is element.Tag:
-                        event_data[child['name']] = ' '.join(child.text.split())
-                        ActionName = event_data.get('ActionName')
-                        TaskName = event_data.get('TaskName')
-                        UserName = event_data.get('UserName')
-                        UserContext = event_data.get('UserContext')
-                        Command = event_data.get('Command')
-                        Path = event_data.get('Path')
-                        Priority = event_data.get('Priority')
-                        ResultCode = event_data.get('ResultCode')
-                        TaskInstanceID = event_data.get('TaskInstanceId')
-                        ProcessID = event_data.get('ProcessID')
-                        CurrentQuota = event_data.get('CurrentQuota')                        
-                        ErrorDescription = event_data.get('ErrorDescription')
-                        
-                        event_data_values = "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % \
-                        (ActionName,
-                        TaskName,
-                        UserName,
-                        UserContext,
-                        Command,
-                        Path,
-                        Priority,
-                        ResultCode,
-                        TaskInstanceID,
-                        ProcessID,
-                        CurrentQuota,
-                        ErrorDescription)
-                        
-                        print(event_info + event_data_values)
- '''                       
+
 if __name__ == "__main__":
     main()
