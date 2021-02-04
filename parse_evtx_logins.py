@@ -30,7 +30,8 @@ evtxs = {1102: 'Log Cleared',
 4768: 'Kerberos TGT Requested',
 4769: 'Kerberos service ticket requested',
 4779: 'Disconnect(RDP or FastUser Switch)',
-4825: 'RDP Connection Denied'
+4825: 'RDP Connection Denied',
+4985: 'State of a Transaction Changed'
 }
 
 event_info_names = ('Date',
