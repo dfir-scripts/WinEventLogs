@@ -72,7 +72,7 @@ event_data_names = (
 'TokenElevationType')
 
 def main():
-    parser = argparse.ArgumentParser(description="Extract Windows Account Logon Events to CSV",
+    parser = argparse.ArgumentParser(description="Extract Windows Events Related to files and processes to CSV",
         usage='parse_evtx_processes.py Security.evtx -n -i -x -m')
     parser.add_argument("evtx", type=str,
         help='Path to the Windows Security EVTX event log file')
