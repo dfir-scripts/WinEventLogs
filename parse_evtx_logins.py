@@ -5,7 +5,8 @@
 # and BeautifulSoup
 # Event IDs can be added or removed by editing the "evtxs" variable
 
-
+import sys
+import re
 import mmap
 import contextlib
 
@@ -65,10 +66,25 @@ event_data_names = ('LogonType',
 
 def main():
     parser = argparse.ArgumentParser(description=
-        "Extract Windows Account Logon Events to CSV")
+        "Extract Windows Account Logon Events to CSV",
+        usage='parse_evtx_logins.py Security.evtx -n -i -x -m')
     parser.add_argument("evtx", type=str,
-                        help="Path to the Windows Security EVTX event log file")
+        help='Path to the Windows Security EVTX event log file')
+    parser.add_argument('-n', '--NoHeader',
+        action='store_true', help="Do not print header")
+    parser.add_argument('-x','--Exclude', type = lambda s: re.split('[ ,;]', s), 
+        help="strings in a comma separated word list ( -x 4624,4634)")
+    parser.add_argument('-i', '--Include', type = lambda s: re.split('[ ,;]', s),
+        help="only strings in a comma separated word list ( -i 4672,-500,04:55:07)")
+    parser.add_argument('-m', '--Matchall', 
+        type = lambda s: re.split('[ ,;]', s),
+        help="all strings in a comma separated word list ( -m admin,,cmd.exe)")
+        
     args = parser.parse_args()
+
+    excludes = (args.Exclude)
+    includes = (args.Include)
+    matches = (args.Matchall)
 
     with open(args.evtx, 'r') as f:
         with contextlib.closing(mmap.mmap(f.fileno(), 0,
@@ -98,7 +114,31 @@ def main():
                     except:
                         pass
                         
-                    print((event_info) + ','.join(map(str,event_data_result)))
-              
+                    a = ((event_info) + ','.join(map(str,event_data_result)))
+                    
+                    if len(sys.argv) == 2:
+                        print(a)
+                        
+                    if args.Matchall:
+                        if all(match in a.casefold() for match in matches):
+                            if args.Exclude:
+                                if not any(exclude in a.casefold() for exclude in excludes):
+                                    print(a)
+                            else:
+                                print(a)
+
+                    elif args.Include:
+                        if any(include in a.casefold() for include in includes):
+                            if args.Exclude:
+                                if not any(exclude in a.casefold() for exclude in excludes):
+                                    print(a)
+                            else:
+                                print(a)
+                    elif args.Exclude:
+                        if not args.Include:
+                            if not args.Matchall:
+                                if not any(exclude in a.casefold() for exclude in excludes):
+                                    print(a)
+
 if __name__ == "__main__":
     main()
