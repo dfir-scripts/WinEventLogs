@@ -70,8 +70,8 @@ def main():
         usage='parse_evtx_logins.py Security.evtx -n -i -x -m')
     parser.add_argument("evtx", type=str,
         help='Path to the Windows Security EVTX event log file')
-    parser.add_argument('-n', '--NoHeader',
-        action='store_true', help="Do not print header")
+    parser.add_argument("-n", "--NoHeader", default=False, action="store_true",
+        help="Do not print Header")
     parser.add_argument('-x','--Exclude', type = lambda s: re.split('[ ,;]', s), 
         help="strings in a comma separated word list ( -x 4624,4634)")
     parser.add_argument('-i', '--Include', type = lambda s: re.split('[ ,;]', s),
@@ -86,11 +86,14 @@ def main():
     includes = (args.Include)
     matches = (args.Matchall)
 
+    header = (','.join(map(str,event_info_names + event_data_names)))
+    if not args.NoHeader:
+        print(header)
+        
     with open(args.evtx, 'r') as f:
         with contextlib.closing(mmap.mmap(f.fileno(), 0,
                                           access=mmap.ACCESS_READ)) as buf:
             fh = FileHeader(buf, 0x0)
-            print(','.join(map(str,event_info_names + event_data_names)))
             for xml, record in evtx_file_xml_view(fh):
                 soup = BeautifulSoup(xml, "lxml")
                 Date = soup.event.system.timecreated['systemtime']
@@ -114,31 +117,34 @@ def main():
                     except:
                         pass
                         
-                    a = ((event_info) + ','.join(map(str,event_data_result)))
+                    output = ((event_info) + ','.join(map(str,event_data_result)))
                     
                     if len(sys.argv) == 2:
-                        print(a)
-                        
-                    if args.Matchall:
-                        if all(match in a.casefold() for match in matches):
-                            if args.Exclude:
-                                if not any(exclude in a.casefold() for exclude in excludes):
-                                    print(a)
-                            else:
-                                print(a)
+                        print(output)
 
-                    elif args.Include:
-                        if any(include in a.casefold() for include in includes):
+                    if args.NoHeader:
+                        if len(sys.argv) == 3:
+                            print(output)                   
+
+                    if args.Matchall:
+                        if all(match in output.casefold() for match in matches):
                             if args.Exclude:
-                                if not any(exclude in a.casefold() for exclude in excludes):
-                                    print(a)
+                                if not any(exclude in output.casefold() for exclude in excludes):
+                                    print(output)
                             else:
-                                print(a)
+                                print(output)
+                    elif args.Include:
+                        if any(include in output.casefold() for include in includes):
+                            if args.Exclude:
+                                if not any(exclude in output.casefold() for exclude in excludes):
+                                    print(output)
+                            else:
+                                print(output)
                     elif args.Exclude:
                         if not args.Include:
                             if not args.Matchall:
-                                if not any(exclude in a.casefold() for exclude in excludes):
-                                    print(a)
+                                if not any(exclude in output.casefold() for exclude in excludes):
+                                    print(output)
 
 if __name__ == "__main__":
     main()
