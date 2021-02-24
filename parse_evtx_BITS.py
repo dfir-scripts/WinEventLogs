@@ -50,9 +50,9 @@ Bits_Header = 'Date,EventID,Description,Computer,ProcessID,ThreadID,Name,'\
 def main():
     parser = argparse.ArgumentParser(description=
         "Find and Extract Windows Bits Events and output CSV",
-        usage='parse_evtx_RDP.py evtx-file -n -i -x -m -a')
+        usage='parse_evtx_BITS.py evtx-file -n -i -x -m')
     parser.add_argument("evtx", type=str,
-        help='Path to the EVTX event log file')
+        help='Microsoft-Windows-Bits-Client%4Operational.evtx ')
     parser.add_argument("-n", "--NoHeader", default=False, action="store_true",
         help="Do not print Header")
     parser.add_argument('-x','--Exclude', type = lambda s: re.split('[ ,;]', s), 
