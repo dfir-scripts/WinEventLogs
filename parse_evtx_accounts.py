@@ -24,7 +24,7 @@ evtxs = {1102: 'Log Cleared',
 4725: 'User Account Disabled',
 4726: 'User Account Deleted',
 4728: 'Member Added to Global Group,' 
-4731: 'Security-enabled Group Created,' 
+4731: 'Security enabled Group Created,' 
 4732: 'Member Added to local Group,' 
 4733: 'Account removed from Local Sec. Group,' 
 4765: 'SID History added to Account,'
