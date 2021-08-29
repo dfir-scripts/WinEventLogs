@@ -110,7 +110,7 @@ RDP_Header = 'Date,EventID,Description,Computer,User,IP Address,'\
 
 def main():
     parser = argparse.ArgumentParser(description=
-        "Find RDP Logon Events in Windows evtx files and output CSV",
+        "Parse Microsoft-Windows-TerminalServices-LocalSessionManager/Operational.evtx for important RDP events",
         usage='parse_evtx_RDP.py evtx-file -n -i -x -m')
     parser.add_argument("evtx", type=str,
         help='Path to the EVTX event log file')
