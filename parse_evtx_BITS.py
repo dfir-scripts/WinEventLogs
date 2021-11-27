@@ -50,24 +50,14 @@ Bits_Header = 'Date,EventID,Description,Computer,ProcessID,ThreadID,Name,'\
 def main():
     parser = argparse.ArgumentParser(description=
         "Find and Extract Windows Bits Events and output CSV",
-        usage='parse_evtx_BITS.py evtx-file -n -i -x -m')
+        usage='parse_evtx_BITS.py Microsoft-Windows-Bits-Client%4Operational.evtx -n')
     parser.add_argument("evtx", type=str,
         help='Microsoft-Windows-Bits-Client%4Operational.evtx ')
     parser.add_argument("-n", "--NoHeader", default=False, action="store_true",
         help="Do not print Header")
-    parser.add_argument('-x','--Exclude', type = lambda s: re.split('[ ,;]', s), 
-        help="strings in a comma separated word list ( -x 4624,4634)")
-    parser.add_argument('-i', '--Include', type = lambda s: re.split('[ ,;]', s),
-        help="only strings in a comma separated word list ( -i 4672,-500,04:55:07)")
-    parser.add_argument('-m', '--Matchall', 
-        type = lambda s: re.split('[ ,;]', s),
-        help="all strings in a comma separated word list ( -m admin,,cmd.exe)")
+
         
     args = parser.parse_args()
-
-    excludes = (args.Exclude)
-    includes = (args.Include)
-    matches = (args.Matchall)
 
     if not args.NoHeader:
         print(Bits_Header)
@@ -101,39 +91,10 @@ def main():
                             if result is None:
                                 result = ''
                             event_data_result.append(result)
-       
+                            output = ((event_info) + ','.join(map(str,event_data_result)))                   
+                            print(output)           
                     except:
                         pass
-
-                output = ((event_info) + ','.join(map(str,event_data_result)))                   
-                    
-                if len(sys.argv) == 2:
-                    print(output)
-
-                if args.NoHeader:
-                    if len(sys.argv) == 3:
-                        print(output)                   
-
-                if args.Matchall:
-                    if all(match in output.casefold() for match in matches):
-                        if args.Exclude:
-                            if not any(exclude in output.casefold() for exclude in excludes):
-                                print(output)
-                        else:
-                            print(output)
-                elif args.Include:
-                    if any(include in output.casefold() for include in includes):
-                        if args.Exclude:
-                            if not any(exclude in output.casefold() for exclude in excludes):
-                                print(output)
-                        else:
-                            print(output)
-                elif args.Exclude:
-                    if not args.Include:
-                        if not args.Matchall:
-                            if not any(exclude in output.casefold() for exclude in excludes):
-                                print(output)
-
 
 if __name__ == "__main__":
     main()
