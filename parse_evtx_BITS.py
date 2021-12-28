@@ -91,8 +91,8 @@ def main():
                             if result is None:
                                 result = ''
                             event_data_result.append(result)
-                            output = ((event_info) + ','.join(map(str,event_data_result)))                   
-                            print(output)           
+                        output = ((event_info) + ','.join(map(str,event_data_result)))                   
+                        print(output)           
                     except:
                         pass
 
