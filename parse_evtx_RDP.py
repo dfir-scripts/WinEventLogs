@@ -29,7 +29,7 @@ RDP_IDs = {21: 'RDP Session logon success',
  24: 'RDP Session has been disconnected',
  25: 'RDP Session reconnection success',
  39: 'RDP Session <X> disconnected by session <Y>',
- 40: 'RDP Session <X> disconnected, reason code <Z>',
+ 40: 'RDP Session <X> disconnected reason code <Z>',
  1149: 'RDP Login screen accessed',
  1006: 'Large Number of Connection Attempts',
  98: 'RDP Successful Connection',
@@ -54,17 +54,18 @@ RDP_remote_info = ('param2',
 'none',
 )
 
-Evtx_Logs = ('Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx', 
-'Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx', 
-'Microsoft-Windows-RemoteDesktopServices-RdpCoreTS%4Operational.evtx', 
-'Microsoft-Windows-TerminalServices-RDPClient%4Operational.evtx')
+Evtx_Logs = [
+"Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx", 
+"Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx", 
+"Microsoft-Windows-RemoteDesktopServices-RdpCoreTS%4Operational.evtx", 
+"Microsoft-Windows-TerminalServices-RDPClient%4Operational.evtx")
 
 # Event header contains values for other EVTX files for concatenation
-RDP_Header = 'Date,Channel,RecordID,Computer,EventID,Description,Domain,User, \
-Host/IP Address,Session,Direction'
+RDP_Header = 'Date,Channel,RecordID,Computer,EventID,Description,Domain,User,' \
+'Host/IP Address,Session,Direction'
 
 def parse_evtx(evtx_file):
-    with open(args.evtx_file, 'r') as f:
+    with open(evtx_file, 'r') as f:
         with contextlib.closing(mmap.mmap(f.fileno(), 0,
                                           access=mmap.ACCESS_READ)) as buf:
             fh = FileHeader(buf, 0x0)
@@ -100,18 +101,18 @@ def parse_evtx(evtx_file):
                                     tag_text = (tag.text)
                             else:
                                 tag_text = ''
-                            
                             user_data.append(tag_text)
-
-                        output = ((event_info) + ','.join(map(str,user_data)))
+                            output = ((event_info) + ','.join(map(str,user_data)))
+                            print(output + "RDP<-in") 
                     ############################
                     if Channel == "Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational":
+                        tag_exists = soup.eventdata.find
                         if not tag_exists:
-                            userdata.append(",,,,")
+                            user_data.append(",,,,")
                         else:
                             for child in soup.eventdata.children:
-                                if type(child) is element.tag:
-                                    if (child['name']) == 'IPClient':
+                                if type(child) is element.Tag:
+                                    if (child['name']) == 'ClientIP':
                                         IP = (child.text)
                                     else:
                                         IP = ''
@@ -119,8 +120,7 @@ def parse_evtx(evtx_file):
                                         Port = (child.text)
                                     else:
                                         Port = ''
-                                user_data.append(",," + IP + Port + ",")
-
+                            user_data.append(",," + IP + Port + ",")
                             output = ((event_info) + ','.join(map(str,user_data)))
                             print(output + "RDP<-in")
                     ############################
@@ -128,18 +128,18 @@ def parse_evtx(evtx_file):
                         user = ''
                         IP = ''               
                         for child in soup.eventdata.children:
-                            if type(child) is element.tag:
+                            if type(child) is element.Tag:
                                 if (child['name']) == 'TraceMessage':
                                     User = (child.text).rstrip("-")
                                 if (child['name']) == 'Server Name':
                                     IP = (child.text)
+                                if (child['name']) == 'Value':
+                                    IP = (child.text)
                                     if IP.isnumeric():
                                         IP = ''
-                                else:
-                                    Port = ''
-                                user_data.append(",," + IP + Port + ",")
-                            output = ((event_info) + ','.join(map(str,user_data)))
-                            print(output + "RDP<-in")
+                        user_data.append(",," + IP + Port + ",")
+                        output = ((event_info) + ','.join(map(str,user_data)))
+                        print(output + "RDP<-in")
 
 def main():
     parser= argparse.ArgumentParser(
@@ -154,8 +154,10 @@ def main():
     parser.add_argument('Evtx_Source', help="Windows event log file or directory")
     parser.add_argument("-n", "--NoHeader", default=False, action="store_true",
         help="Do not print Header")
-
     args = parser.parse_args()
+
+    if not args.NoHeader:
+        print(RDP_Header)
 
     #Enumerate and verify files in directory path, then send to parser
     if (os.path.isdir(args.Evtx_Source)):
@@ -166,7 +168,7 @@ def main():
 
     #Enumerate and verify file in input string, then send to parser
     elif os.path.isfile(args.Evtx_Source):
-        if  args.Evtx_Source.lower().endswith('pf'):
+        if  args.Evtx_Source.lower().endswith('evtx'):
             file_to_parse = args.Evtx_Source
             parse_evtx(file_to_parse)
     else:
