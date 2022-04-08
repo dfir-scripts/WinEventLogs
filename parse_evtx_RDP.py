@@ -3,7 +3,7 @@
 # 
 # Targets the following logs for inbound and outbound connections:
 # Microsoft-Windows-TerminalServices-LocalSessionManager/Operational.evtx
-# Microsoft-Windows-TerminalServices-RemoteConnectionManager.evtx
+# Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational.evtx
 # Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational.evtx 
 # Microsoft-Windows-TerminalServices-RDPClient/Operational.evtx     
 
@@ -58,7 +58,7 @@ Evtx_Logs = [
 "Microsoft-Windows-TerminalServices-LocalSessionManager%4Operational.evtx", 
 "Microsoft-Windows-TerminalServices-RemoteConnectionManager%4Operational.evtx", 
 "Microsoft-Windows-RemoteDesktopServices-RdpCoreTS%4Operational.evtx", 
-"Microsoft-Windows-TerminalServices-RDPClient%4Operational.evtx")
+"Microsoft-Windows-TerminalServices-RDPClient%4Operational.evtx"]
 
 # Event header contains values for other EVTX files for concatenation
 RDP_Header = 'Date,Channel,RecordID,Computer,EventID,Description,Domain,User,' \
@@ -102,8 +102,8 @@ def parse_evtx(evtx_file):
                             else:
                                 tag_text = ''
                             user_data.append(tag_text)
-                            output = ((event_info) + ','.join(map(str,user_data)))
-                            print(output + "RDP<-in") 
+                        output = ((event_info) + ','.join(map(str,user_data)))
+                        print(output + ",RDP<-in") 
                     ############################
                     if Channel == "Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational":
                         tag_exists = soup.eventdata.find
@@ -120,12 +120,12 @@ def parse_evtx(evtx_file):
                                         Port = (child.text)
                                     else:
                                         Port = ''
-                            user_data.append(",," + IP + Port + ",")
-                            output = ((event_info) + ','.join(map(str,user_data)))
-                            print(output + "RDP<-in")
+                            user_data.append(",," + IP + "," + Port + ",")
+                        output = ((event_info) + ','.join(map(str,user_data)))
+                        print(output + "RDP<-in")
                     ############################
                     if Channel == "Microsoft-Windows-TerminalServices-RDPClient/Operational":
-                        user = ''
+                        User = ''
                         IP = ''               
                         for child in soup.eventdata.children:
                             if type(child) is element.Tag:
@@ -137,9 +137,9 @@ def parse_evtx(evtx_file):
                                     IP = (child.text)
                                     if IP.isnumeric():
                                         IP = ''
-                        user_data.append(",," + IP + Port + ",")
+                        user_data.append("," + User + "," + IP + ",,")
                         output = ((event_info) + ','.join(map(str,user_data)))
-                        print(output + "RDP<-in")
+                        print(output + "RDP->out")
 
 def main():
     parser= argparse.ArgumentParser(
