@@ -8,8 +8,8 @@ function usage(){
 which jq > /dev/null || usage
 file $1 2>/dev/null | grep -q JSON || usage
 [ "$1" == "-h" ] && usage
-header="Count,LoginType,EventID,SubjectUserName,TargetUserName,IPAddress,ProcessName"
-result=$(cat $1 | jq -r '.Event|select(.EventData.LogonType != null)|",\(.EventData.LogonType),\(.System.EventID),\(.EventData.AuthenticationPackageName),\(.EventData.SubjectUserName),\(.EventData.TargetUserName),\(.EventData.IPAddress),\(.EventData.ProcessName)"' |\sort|uniq -c|sort -rn|sed 's/^ *//g')
+header="COUNT,LOGONTYPE,EVENTID,AUTHPACKAGE,SUBJECTUSERNAME,TARGETUSERNAME,IPADDRESS,PROCESSNAME,LOGONPROCESSNAME"
+result=$(cat $1 | jq -r '.Event|select(.EventData.LogonType != null)|",\(.EventData.LogonType),\(.System.EventID),\(.EventData.AuthenticationPackageName),\(.EventData.SubjectUserName),\(.EventData.TargetUserName),\(.EventData.IPAddress),\(.EventData.ProcessName),\(.EventData.LogonProcessName)"' |\sort|uniq -c|sort -rn|sed 's/^ *//g')
 printf "%s\n%s"  ${header} "${result}"|column -t -s ","
 
 legend="LOGON,,
