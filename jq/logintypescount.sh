@@ -9,7 +9,7 @@ which jq > /dev/null || usage
 file $1 2>/dev/null | grep -q JSON || usage
 [ "$1" == "-h" ] && usage
 header="COUNT,LOGONTYPE,EVENTID,AUTHPACKAGE,SUBJECTUSERNAME,TARGETUSERNAME,IPADDRESS,PROCESSNAME,LOGONPROCESSNAME"
-result=$(cat $1 | jq -r '.Event|select(.EventData.LogonType != null)|",\(.EventData.LogonType),\(.System.EventID),\(.EventData.AuthenticationPackageName),\(.EventData.SubjectUserName),\(.EventData.TargetUserName),\(.EventData.IPAddress),\(.EventData.ProcessName),\(.EventData.LogonProcessName)"' |\sort|uniq -c|sort -rn|sed 's/^ *//g')
+result=$(cat $1 | jq -r '.Event|select(.EventData.LogonType != null)|",\(.EventData.LogonType),\(.System.EventID),\(.EventData.AuthenticationPackageName),\(.EventData.SubjectUserName),\(.EventData.TargetUserName),\(.EventData.IPAddress),\(.EventData.ProcessName),\(.EventData.LogonProcessName)"' |sort|uniq -c|sort -rn|sed 's/^ *//g')
 printf "%s\n%s"  ${header} "${result}"|column -t -s ","
 
 legend="LOGON,,
