@@ -11,7 +11,7 @@ which jq > /dev/null || usage
 file $1 2>/dev/null | grep -q JSON || usage
 [ "$1" == "-h" ] && usage
 header="TIME,EVENTID,SUBJECTDOMAIN,SUBJECTUSER,TARGETDOMAIN,TARGETUSER,IPADDRESS,LOGONTYPE,AUTHPACKAGENAME,PROCESSNAME,FAILREASON,STATUS,SUBSTATUS"
-result=$(cat $1 | jq -r '.Event|select(.System.EventID==4625 or .System.EventID==4771)|"\(.System.TimeCreated."#attributes".SystemTime),\(.System.EventID),\(.EventData.SubjectDomainName),\(.EventData.SubjectUserName),\(.EventData.TargetDomainName),\(.EventData.TargetUserName),\(.EventData.IPAddress),\(.EventData.LogonType),\(.EventData.AuthenticationPackageName),\(.EventData.ProcessName),\(.EventData.FailureReason),\(.EventData.Status),\(.EventData.SubStatus)"')
+result=$(cat $1 | jq -r '.Event|select(.System.EventID==4625 or .System.EventID==4771)|"\(.System.TimeCreated."#attributes".SystemTime),\(.System.EventID),\(.EventData.SubjectDomainName),\(.EventData.SubjectUserName),\(.EventData.TargetDomainName),\(.EventData.TargetUserName),\(.EventData.IpAddress),\(.EventData.LogonType),\(.EventData.AuthenticationPackageName),\(.EventData.ProcessName),\(.EventData.FailureReason),\(.EventData.Status),\(.EventData.SubStatus)"')
 
 [ "${result}" ]  && echo "********************* LOGON FAILURE STATUS/SUBSTATUS CODES ********************* " 
 [ "${result}" ]  && echo "
