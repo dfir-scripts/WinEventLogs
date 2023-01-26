@@ -44,7 +44,7 @@ function JLParser-stats(){
  
 }
 which jq > /dev/null || usage
-file $1 2>/dev/null | grep -q JSON || usage
+file $1 2>/dev/null | grep -qi JSON || usage
 [ "$1" == "-h" ] && usage
 input="$1"
 JLParser-stats
