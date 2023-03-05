@@ -37,8 +37,7 @@ evtxs = {1102: 'Log Cleared',
 4767: 'User Account Unlocked',
 4781: 'Account Name Changed',
 4793: 'Password Policy Checking API called',
-4794: 'Attempted Admin Password Change! Directory Services Restore Mode(DSRM)',
-4799: 'A security-enabled local group membership was enumerated' 
+4794: 'Attempted Admin Password Change! Directory Services Restore Mode(DSRM)'
 }
 
 event_info_names = ('Date',
