@@ -9,6 +9,7 @@
 
 # https://www.13cubed.com/downloads/rdp_flowchart.pdf
 # https://ponderthebits.com/2018/02/windows-rdp-related-event-logs-identification-tracking-and-investigation/
+# https://frsecure.com/blog/rdp-connection-event-logs/
 # Requires Python-evtx https://github.com/williballenthin/python-evtx
 
 import os
@@ -23,17 +24,17 @@ from bs4 import BeautifulSoup, element
 from Evtx.Evtx import FileHeader
 from Evtx.Views import evtx_file_xml_view
 
-RDP_IDs = {21: 'RDP Session logon success',
- 22: 'RDP Shell start notification received',
- 23: 'RDP Session logoff',
+RDP_IDs = {21: 'RDP Session logon succeeded',
+ 22: 'RDP Shell start notification received (GUI)',
+ 23: 'RDP Session logged off successfully',
  24: 'RDP Session has been disconnected',
  25: 'RDP Session reconnection success',
  39: 'RDP Session <X> disconnected by session <Y>',
  40: 'RDP Session <X> disconnected reason code <Z>',
- 1149: 'RDP Login screen accessed',
+ 1149: 'Sucessful RDP logon (Win10+ Server2016+)',
  1006: 'Large Number of Connection Attempts',
- 98: 'RDP Successful Connection',
- 131: 'RDP accepted a new TCP connection',
+ 98: 'Server accepted a new TCP/UDP connection',
+ 131: 'Server accepted a new TCP/UDP connection',
  140: 'RDP connection Failed IP x.x.x.x incorect password',
  1024: 'RDP is trying to connect to another host',
  1102: 'Client initiated an outbound RDP connection',
