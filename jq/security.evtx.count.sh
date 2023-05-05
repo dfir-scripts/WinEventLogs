@@ -2,15 +2,19 @@
 # https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/
 
 function usage(){
-  echo requires jq and jsonl export of Security.evtx
-  echo "USAGE,$0 <Security.evtx.jsonl>"
+  echo "$0 
+  
+  requires jq and a jsonl export of Security.evtx
+  USAGE,$0 <Security.evtx.jsonl> -r
+      Optional
+        -r Print raw csv without header"
   exit  
 }  
 which jq > /dev/null || usage
 file $1 2>/dev/null | grep -q JSON || usage
 [ "$1" == "-h" ] && usage
 
-count=$(cat $1 | jq -r '.Event|select(.System.EventID != null)|.System.EventID'|sort|uniq -c|sort -rn)
+count=$(cat $1 | jq -r '.Event|select(.System.EventID != null)|"\(.System.EventID) \(.System.Computer)"'|sort|uniq -c|sort -rn)
 
 eventID_Descrictors=",1100,The event logging service has shut down
 ,1101,Audit events have been dropped by the transport.
@@ -435,10 +439,10 @@ eventID_Descrictors=",1100,The event logging service has shut down
 ,6424,The installation of this device was allowed; after having previously been forbidden by policy
 ,8191,Highest System-Defined Audit Message Value"
 
-[ "$count" != '' ] && header="COUNT,EVENTID,DESCRIPTION"
-result=$(echo "$count" |while read -r var1 var2;
+[ "$count" != '' ] && header="COUNT,EVENTID,DESCRIPTION,COMPUTER"
+result=$(echo "$count" |while read -r var1 var2 var3;
   do 
-    a=$(echo "$eventID_Descrictors" |grep $var2) && \
-        echo $var1 $a
+    var2=$(echo "$eventID_Descrictors" |grep $var2) && \
+        echo $var1$var2,$var3
   done)
-printf "%s\n%s"  ${header} "${result}"|column -t -s ","
+[ "$2" != "-r" ] && printf "%s\n%s"  ${header} "${result}"|column -t -s "," || printf "%s\n%s" "${result}"
