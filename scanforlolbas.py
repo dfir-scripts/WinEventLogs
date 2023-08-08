@@ -9,13 +9,15 @@ def parse_file(fp,lollist):
         with open(fp, "r") as f:
             file_data = f.readlines()
         for x in file_data:
+            x = x.lower()
             for y in lollist:
+                y = y.lower()
                 if y in x:
                     left,sep,right = x.partition(y)
                     ALPHA = string.ascii_letters
                     x = x.rstrip()
                     x = x.replace(',',';')
-                    list = []                    
+                    list = []
                     if not (left[1:]).endswith(tuple(ALPHA)):
                         list.append(y)
                         list.append(fn)
@@ -23,7 +25,7 @@ def parse_file(fp,lollist):
                     if list:
                         list = (','.join(list))
                         list = (" ".join(list.split()))
-                        print(list)                        
+                        print(list)
     except UnicodeDecodeError:
         pass # non-text data
 
@@ -58,7 +60,7 @@ def main():
         fp = input_path
         parse_file(fp,lollist)
     else:
-        print("invalid path!!") 
+        print("invalid path!!")
 
 if __name__ == "__main__":
     main()
