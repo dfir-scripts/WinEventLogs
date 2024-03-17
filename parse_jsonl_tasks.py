@@ -14,6 +14,7 @@ def process_event(event):
 
     if not args.summarize:
         return (
+            system_attributes.get('SystemTime'),
             event_data.get('#attributes', {}).get('Name'),
             event_data.get('Path'),
             event_data.get('Priority'),
@@ -33,7 +34,6 @@ def process_event(event):
             provider_attributes.get('Name'),
             security_attributes.get('UserID'),
             system.get('Task'),
-            system_attributes.get('SystemTime'),
             system.get('Version'),
         )
     else:
@@ -61,6 +61,7 @@ writer = csv.writer(sys.stdout)
 
 if not args.summarize:
     headers = [
+        'SystemTime',
         'Event',
         'Path',
         'Priority',
@@ -80,7 +81,6 @@ if not args.summarize:
         'Provider_Name',
         'Security_UserID',
         'Task',
-        'SystemTime',
         'Version',
     ]
     writer.writerow(headers)
