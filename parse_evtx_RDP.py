@@ -121,7 +121,7 @@ def parse_evtx(evtx_file):
                                         Port = (child.text)
                                     else:
                                         Port = ''
-                            user_data.append(",," + IP + "," + Port + ",")
+                                user_data.append(",," + IP + "," + Port + ",")
                         output = ((event_info) + ','.join(map(str,user_data)))
                         print(output + "RDP<-in")
                     ############################
